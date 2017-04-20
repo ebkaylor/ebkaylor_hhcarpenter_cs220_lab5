@@ -3,7 +3,9 @@ package graph.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A basic representation of a graph that can perform BFS, DFS, Dijkstra,
@@ -13,7 +15,9 @@ import java.util.Map;
  *
  */
 public class Graph {
-
+	Map<String,Node> nameToNode;
+	Set<Node> vertices;
+	Set<String> nodes;
     /**
      * Return the {@link Node} with the given name.
      * 
@@ -26,7 +30,18 @@ public class Graph {
      * @return
      */
     public Node getOrCreateNode(String name) {
-        throw new UnsupportedOperationException("Implement this method");
+    	if (nameToNode.containsKey(name))
+    	{
+    		return nameToNode.get(name);
+    	}
+    	else
+    	{
+    		nameToNode.put(name, new Node(name));
+    		return nameToNode.get(name);
+    	}
+    	
+    	
+    	
     }
 
     /**
@@ -37,7 +52,7 @@ public class Graph {
      * @return
      */
     public boolean containsNode(String name) {
-        throw new UnsupportedOperationException("Implement this method");
+        return(nameToNode.containsKey(name));
     }
 
     /**
@@ -46,7 +61,11 @@ public class Graph {
      * @return
      */
     public Collection<Node> getAllNodes() {
-        throw new UnsupportedOperationException("Implement this method");
+        Set <Node> collection = new HashSet <Node>();
+    	for (Node n: nameToNode.values()) {
+    		collection.add(n);
+    	}
+    	return collection;
     }
 
     /**
@@ -64,7 +83,18 @@ public class Graph {
      * @return
      */
     public int getSumOfAllEdgeWeights() {
-        throw new UnsupportedOperationException("Implement this method");
+        int sum = 0;    	
+    	Set<Integer> edgeWeights = new HashSet<Integer>()
+    	for (Node n : nameToNode.values())
+    	{
+    		Set<Node> foo = new HashSet<Node>();
+    		foo.addAll(getAllNodes());
+    		for (Node fooNode: foo)
+    		{
+    		n.getWeight(fooNode);
+    		}
+    	}
+    	
     }
 
     /**

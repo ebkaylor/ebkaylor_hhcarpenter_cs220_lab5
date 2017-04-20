@@ -4,6 +4,10 @@
 package graph.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Class to represent a single node (or vertex) of a graph.
@@ -28,8 +32,13 @@ public class Node implements Comparable<Node> {
      * have no edges.
      * @param name
      */
+	Node node;
+	String myName;
+	Map <Node, Integer> neighbors;
     public Node(String name) {
-        throw new UnsupportedOperationException("Implement this method");
+        node = new Node(name);
+        myName = name;
+        neighbors = new HashMap <Node, Integer>();
     }
 
     /**
@@ -38,7 +47,7 @@ public class Node implements Comparable<Node> {
      * @return
      */
     public String getName() {
-        throw new UnsupportedOperationException("Implement this method");
+       return myName;
     }
 
     /**
@@ -47,7 +56,12 @@ public class Node implements Comparable<Node> {
      * @return
      */
     public Collection<Node> getNeighbors() {
-        throw new UnsupportedOperationException("Implement this method");
+    	Set<Node> collection = new HashSet<Node>();
+        for (Node s : neighbors.keySet())
+        {
+        	collection.add(s);
+        }
+    	return collection;
     }
 
     /**
@@ -57,8 +71,9 @@ public class Node implements Comparable<Node> {
      * @param weight
      */
     public void addDirectedEdgeToNode(Node n, int weight) {
-        throw new UnsupportedOperationException("Implement this method");
-    }
+        neighbors.put(n, weight);
+    	
+     }
 
     /**
      * Add an undirected edge to the given node using the given weight.
@@ -68,7 +83,8 @@ public class Node implements Comparable<Node> {
      * @param weight
      */
     public void addUndirectedEdgeToNode(Node n, int weight) {
-        throw new UnsupportedOperationException("Implement this method");
+        neighbors.put(n, weight);
+        n.neighbors.put(this, weight);
     }
 
     /**
@@ -81,7 +97,12 @@ public class Node implements Comparable<Node> {
      * @throws IllegalStateException
      */
     public void removeDirectedEdgeToNode(Node n) {
-        throw new UnsupportedOperationException("Implement this method");
+        if (neighbors.containsKey(n)) {
+        	neighbors.remove(n);
+        }
+        else {
+        	throw new IllegalStateException();
+        }
     }
 
     /**
@@ -95,7 +116,14 @@ public class Node implements Comparable<Node> {
      * @throws IllegalStateException
      */
     public void removeUndirectedEdgeToNode(Node n) {
-        throw new UnsupportedOperationException("Implement this method");
+    	if (neighbors.containsKey(n) && n.neighbors.containsKey(this)) {
+    		neighbors.remove(n);
+    		n.neighbors.remove(this);
+    	}
+    	else {
+    		throw new IllegalStateException();
+    	}
+    	
     }
 
     /**
@@ -106,7 +134,14 @@ public class Node implements Comparable<Node> {
      * @return
      */
     public boolean hasEdge(Node other) {
-        throw new UnsupportedOperationException("Implement this method");
+        if (neighbors.containsKey(other))
+        {
+        	return true;
+        }
+        else {
+        	return false;
+        }
+    	
     }
 
     /**
@@ -119,20 +154,28 @@ public class Node implements Comparable<Node> {
      * @throws IllegalStateException
      */
     public int getWeight(Node n) {
-        throw new UnsupportedOperationException("Implement this method");
+    	if (hasEdge(n))
+    	{
+    		return neighbors.get(n);
+    	}
+    	else
+    	{
+    		throw new IllegalStateException();
+    	}
     }
 
     @Override
     public int compareTo(Node o) {
         // Nodes should be sorted alphabetically by their name
         // just delegate to the compareTo() method for String
-        throw new UnsupportedOperationException("Implement this method");
+    	return myName.compareTo(o.getName());
+    	
+    	
+    	
     }
 
     @Override
     public String toString() {
-        // Just return the Node's name
-        // toString() really helps you use the debugger
-        throw new UnsupportedOperationException("Implement this method");
+        return myName;
     }
 }
