@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Class to represent a single node (or vertex) of a graph.
@@ -26,19 +27,17 @@ import java.util.Set;
  *
  */
 public class Node implements Comparable<Node> {
-
+	
+	String myName;
+	Map <Node, Integer> neighbors;
     /**
      * Create a new node with the given name. The newly created node should
      * have no edges.
      * @param name
      */
-	Node node;
-	String myName;
-	Map <Node, Integer> neighbors;
     public Node(String name) {
-        node = new Node(name);
-        myName = name;
-        neighbors = new HashMap <Node, Integer>();
+        this.myName = name;
+        this.neighbors = new TreeMap <Node, Integer>();
     }
 
     /**

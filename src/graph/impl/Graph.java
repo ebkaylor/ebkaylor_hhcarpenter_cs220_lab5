@@ -2,9 +2,13 @@ package graph.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -15,9 +19,9 @@ import java.util.Set;
  *
  */
 public class Graph {
-	Map<String,Node> nameToNode;
-	Set<Node> vertices;
-	Set<String> nodes;
+	Map<String,Node> nameToNode=new HashMap<String,Node>();
+	Set<Node> vertices= new HashSet<Node>();
+	Set<String> nodes= new HashSet<String>();
     /**
      * Return the {@link Node} with the given name.
      * 
@@ -30,16 +34,13 @@ public class Graph {
      * @return
      */
     public Node getOrCreateNode(String name) {
-    	if (nameToNode.containsKey(name))
+    	if (!nameToNode.containsKey(name))
     	{
-    		return nameToNode.get(name);
+    		 nameToNode.put(name, new Node(name));
     	}
-    	else
-    	{
-    		nameToNode.put(name, new Node(name));
-    		return nameToNode.get(name);
-    	}
-    	
+    
+		 return nameToNode.get(name);
+
     	
     	
     }
@@ -84,16 +85,21 @@ public class Graph {
      */
     public int getSumOfAllEdgeWeights() {
         int sum = 0;    	
-    	Set<Integer> edgeWeights = new HashSet<Integer>()
+    	ArrayList<Integer> edgeWeights = new ArrayList<Integer>();
     	for (Node n : nameToNode.values())
     	{
     		Set<Node> foo = new HashSet<Node>();
     		foo.addAll(getAllNodes());
     		for (Node fooNode: foo)
     		{
-    		n.getWeight(fooNode);
+    		edgeWeights.add(n.getWeight(fooNode));
     		}
     	}
+    	for (int i : edgeWeights)
+    	{
+    		sum+=i;
+    	}
+    	return sum/2;
     	
     }
 
@@ -109,7 +115,24 @@ public class Graph {
      * @param v
      */
     public void breadthFirstSearch(String startNodeName, NodeVisitor v) {
-        throw new UnsupportedOperationException("Implement this method");
+    	v.visit(nameToNode.get(startNodeName));
+    	Set <Node> setVisited = new HashSet <Node>();
+    	Queue <Node> queueToVisit = new PriorityQueue<Node>();
+
+    	while (setVisited.size() < nameToNode.size()) {
+    		queueToVisit.add(nameToNode.get(startNodeName));
+    		for (Node n : queueToVisit)
+    		{
+    			setVisited.add(n);
+    			v.visit(n);
+    			queueToVisit.addAll(n.getNeighbors());
+    		}
+    		
+    	}
+    	
+    	
+    	
+    	
     }
 
     /**
@@ -124,7 +147,19 @@ public class Graph {
      * @param v
      */
     public void depthFirstSearch(String startNodeName, NodeVisitor v) {
-        throw new UnsupportedOperationException("Implement this method");
+    	v.visit(nameToNode.get(startNodeName));
+    	Set <Node> setVisited = new HashSet <Node>();
+    	Set <Node> setToVisit = new HashSet <Node>();
+
+    	while (setVisited.size() < nameToNode.size()) {
+    		setToVisit.addAll(nameToNode.values());
+    		for (Node n : setToVisit)
+    		{
+    			setVisited.add(n);
+    			v.visit(n);
+    		}
+    	}
+    	
     }
 
     /**
