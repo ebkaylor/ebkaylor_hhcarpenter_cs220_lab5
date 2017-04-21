@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * A basic representation of a graph that can perform BFS, DFS, Dijkstra,
@@ -170,13 +171,25 @@ public class Graph {
      * 
      * <b>Hint:</b> Creating a helper class called Path, which stores a destination
      * (String) and a cost (Integer), and making it implement Comparable, can be
-     * helpful. Well, either than or repeated linear scans.
+     * helpful. Well, either that or repeated linear scans.
      * 
      * @param startName
      * @return
      */
     public Map<Node, Integer> dijkstra(String startName) {
-        throw new UnsupportedOperationException("Implement this method");
+    Queue <Integer> line = new PriorityQueue <Integer>();
+    Map <Node, Integer> nodeToInteger = new TreeMap <Node, Integer>();
+    for (Node s :nameToNode.get(startName).getNeighbors())
+    line.add(nameToNode.get(startName).neighbors.get(s));	
+    nodeToInteger.put(getOrCreateNode(startName),0);
+    while (nodeToInteger.size()<getAllNodes().size())
+      {
+    	
+    	  
+    	  
+      }
+    	
+    	
     }
 
     /**
@@ -194,7 +207,12 @@ public class Graph {
      * @return
      */
     public Graph primJarnik() {
-        throw new UnsupportedOperationException("Implement this method");
+        
+    	
+    	
+    	
+    	
+    	
     }
 
     /**
