@@ -176,20 +176,48 @@ public class Graph {
      * @param startName
      * @return
      */
-    public Map<Node, Integer> dijkstra(String startName) {
-    Queue <Integer> line = new PriorityQueue <Integer>();
-    Map <Node, Integer> nodeToInteger = new TreeMap <Node, Integer>();
-    for (Node s :nameToNode.get(startName).getNeighbors())
-    line.add(nameToNode.get(startName).neighbors.get(s));	
-    nodeToInteger.put(getOrCreateNode(startName),0);
-    while (nodeToInteger.size()<getAllNodes().size())
-      {
+    
+    private class Path implements Comparable<Node>{
+
+    	String destination;
+    	Integer cost;
     	
+    	public Path(String s, Integer c)
+    	{
+    		destination=s;
+    		cost=c;
+    	}
+		@Override
+		public int compareTo(Node n) {
+
+			return Integer.compare(nameToNode.get(destination).getWeight(n), cost);
+			
+		}
+    	
+    }
+    
+    
+    public Map<Node, Integer> dijkstra(String startName) {
+    	
+    	
+    	
+    	
+    Queue <Path> path = new PriorityQueue <Path>();
+    Map <Node, Integer> destinationToCost = new TreeMap <Node, Integer>();
+    for (Node s :nameToNode.get(startName).getNeighbors()){
+    Path tempPath = new Path(s.myName,s.getWeight(nameToNode.get(startName)));
+    path.add(tempPath);
+    }
+    
+    destinationToCost.put(getOrCreateNode(startName),0);
+    while (destinationToCost.size()<getAllNodes().size())
+      {
+    	destinationToCost.put(getOrCreateNode(path.peek().destination), path.poll().cost);
     	  
     	  
       }
-    	
-    	
+    	return destinationToCost;
+    
     }
 
     /**
@@ -206,6 +234,18 @@ public class Graph {
      * 
      * @return
      */
+    private class Edge implements Comparable<Node>{
+    	Integer cost;
+    	String destination;
+    	Node fun;
+    	public Edge (Node n){
+    		fun=n;
+    		cost=.getWeight(n)
+    		
+    	}
+    	
+    }
+    
     public Graph primJarnik() {
         
     	
