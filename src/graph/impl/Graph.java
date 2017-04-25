@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeMap;
 
 /**
@@ -116,21 +118,23 @@ public class Graph {
      * @param v
      */
     public void breadthFirstSearch(String startNodeName, NodeVisitor v) {
-    	v.visit(nameToNode.get(startNodeName));
-    	Set <Node> setVisited = new HashSet <Node>();
-    	Queue <Node> queueToVisit = new PriorityQueue<Node>();
-
-    	while (setVisited.size() < nameToNode.size()) {
-    		queueToVisit.add(nameToNode.get(startNodeName));
-    		for (Node n : queueToVisit)
-    		{
-    			setVisited.add(n);
-    			v.visit(n);
-    			queueToVisit.addAll(n.getNeighbors());
-    		}
-    		
-    	}
     	
+    	Set <Node> visited = new HashSet<Node>();
+    	Queue <Node> toVisit = new LinkedList<Node>();
+    	toVisit.add(nameToNode.get(startNodeName));
+    	while (toVisit.isEmpty())
+    	{
+    		Node current =  toVisit.poll();
+    		visited.add(current);
+    		v.visit(current);
+    		for (Node n : current.neighbors.keySet())
+    		{
+    			if (!visited.contains(n))
+    			{
+    				toVisit.add(n);
+    			}
+    		}
+    	}
     	
     	
     	
@@ -148,34 +152,27 @@ public class Graph {
      * @param v
      */
     public void depthFirstSearch(String startNodeName, NodeVisitor v) {
-    	v.visit(nameToNode.get(startNodeName));
-    	Set <Node> setVisited = new HashSet <Node>();
-    	Set <Node> setToVisit = new HashSet <Node>();
 
-    	while (setVisited.size() < nameToNode.size()) {
-    		setToVisit.addAll(nameToNode.values());
-    		for (Node n : setToVisit)
+    	Set <Node> visited = new HashSet<Node>();
+    	Stack <Node> toVisit = new Stack<Node>();
+    	toVisit.add(nameToNode.get(startNodeName));
+    	while (toVisit.isEmpty())
+    	{
+    		Node current =  toVisit.pop();
+    		visited.add(current);
+    		v.visit(current);
+    		for (Node n : current.neighbors.keySet())
     		{
-    			setVisited.add(n);
-    			v.visit(n);
+    			if (!visited.contains(n))
+    			{
+    				toVisit.push(n);
+    			}
     		}
     	}
     	
     }
 
-    /**
-     * Perform Dijkstra's algorithm for computing the cost of the shortest path
-     * to every node in the graph starting at the node with the given name.
-     * Return a mapping from every node in the graph to the total minimum cost of reaching
-     * that node from the given start node.
-     * 
-     * <b>Hint:</b> Creating a helper class called Path, which stores a destination
-     * (String) and a cost (Integer), and making it implement Comparable, can be
-     * helpful. Well, either that or repeated linear scans.
-     * 
-     * @param startName
-     * @return
-     */
+  
     
     private class Path implements Comparable<Node>{
 
@@ -196,30 +193,116 @@ public class Graph {
     	
     }
     
-    
+    /**
+     * Perform Dijkstra's algorithm for computing the cost of the shortest path
+     * to every node in the graph starting at the node with the given name.
+     * Return a mapping from every node in the graph to the total minimum cost of reaching
+     * that node from the given start node.
+     * 
+     * <b>Hint:</b> Creating a helper class called Path, which stores a destination
+     * (String) and a cost (Integer), and making it implement Comparable, can be
+     * helpful. Well, either that or repeated linear scans.
+     * 
+     * @param startName
+     * @return
+     */
     public Map<Node, Integer> dijkstra(String startName) {
+//    	
+//    	
+//    	
+//    	
+//    Queue <Path> path = new PriorityQueue <Path>();
+//    Map <Node, Integer> destinationToCost = new TreeMap <Node, Integer>();
+//    for (Node s :nameToNode.get(startName).getNeighbors()){
+//    Path tempPath = new Path(s.myName,s.getWeight(nameToNode.get(startName)));
+//    path.add(tempPath);
+//    }
+//    
+//    destinationToCost.put(getOrCreateNode(startName),0);
+//    while (destinationToCost.size()<getAllNodes().size())
+//      {
+//    	destinationToCost.put(getOrCreateNode(path.peek().destination), path.poll().cost);
+//    	  
+//    	  
+//      }
+//    	return destinationToCost;
+//    
+    	Map<Node, Integer> result = new HashMap<Node, Integer>();
+    	result.put(nameToNode.get(startName), 0);
+    	Queue<Path> toDo= new PriorityQueue<Path>();
+    	toDo.add(new Path (startName, 0));
+    	while (result.size()<getAllNodes().size())
+    	{
+    		Path nextPath = toDo.poll();
+    		Node node = nameToNode.get(nextPath.destination);
+    		if (result.containsKey(node))
+    		{
+    			continue;
+    		}
+    		int cost = result.get(node);
+    		for (Node n: result.keySet()) {
+    			Path p = new Path(n.myName, cost);
+    		}
+    	}
+    	return result;
     	
-    	
-    	
-    	
-    Queue <Path> path = new PriorityQueue <Path>();
-    Map <Node, Integer> destinationToCost = new TreeMap <Node, Integer>();
-    for (Node s :nameToNode.get(startName).getNeighbors()){
-    Path tempPath = new Path(s.myName,s.getWeight(nameToNode.get(startName)));
-    path.add(tempPath);
-    }
-    
-    destinationToCost.put(getOrCreateNode(startName),0);
-    while (destinationToCost.size()<getAllNodes().size())
-      {
-    	destinationToCost.put(getOrCreateNode(path.peek().destination), path.poll().cost);
-    	  
-    	  
-      }
-    	return destinationToCost;
-    
     }
 
+    
+    private class Edge implements Comparable<Edge>{
+    	int distance;
+    	String label;
+    	Node src;
+    	int weight;
+    	Node nd;
+    	
+    	public Edge(Node start, Node end)
+    	{
+    		label = start.myName + " "+ end.myName +" " + start.getWeight(end);
+    		nd=end;
+    		src=start;
+    		weight=start.getWeight(end);
+    	}
+    	
+    	public int getWeight(){
+    		return weight;
+    	}
+    	
+    	public String getLabel(){
+    		return label;
+    	}
+    	
+    	public Node getSrc(){
+    		return src;
+    	}
+    	
+    	public void setWeight(int n){
+    		weight = n;
+    	}
+    	
+    	public void setLabel(Node start, Node end)
+    	{
+    		label = start.myName + " " + end.myName + " " + start.getWeight(end);
+    	}
+    	
+    	public void setSrc(Node start)
+    	{
+    		src=start;
+    	}
+    	
+    	public void setNd(Node end)
+    	{
+    		nd=end;
+    	}
+    	
+    	public Node getNd(){
+    		return nd;
+    	}
+    	
+    	public int compareTo(Edge o){
+    		return this.getWeight()-o.weight;
+    	}
+    }
     /**
      * Perform Prim-Jarnik's algorithm to compute a Minimum Spanning Tree (MST).
      * 
@@ -234,23 +317,26 @@ public class Graph {
      * 
      * @return
      */
-    private class Edge implements Comparable<Node>{
-    	Integer cost;
-    	String destination;
-    	Node fun;
-    	public Edge (Node n){
-    		fun=n;
-    		cost=.getWeight(n)
-    		
-    	}
-    	
-    }
-    
     public Graph primJarnik() {
         
-    	
-    	
-    	
+    	Graph result = new Graph();
+    	Set<String> nodesSolved = new HashSet<String>();
+    	Set<Edge> edgesIncluded = new HashSet<Edge>();
+    	Queue<Edge> frontier = new PriorityQueue<Edge>();
+    	Node startNode = nameToNode.values().iterator().next();
+    	nodesSolved.add(startNode.myName);
+    	while (nodesSolved.size()<nameToNode.size())
+    	{
+    		for (Node n : startNode.getNeighbors())
+    		{
+    			frontier.add(new Edge(startNode,n));
+    		}
+    		nodesSolved.add(frontier.peek().getNd().myName);
+    		startNode=frontier.peek().getNd();
+    		edgesIncluded.add(frontier.poll());
+    		
+    	}
+    	return result;
     	
     	
     }
