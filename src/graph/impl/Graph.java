@@ -97,7 +97,10 @@ public class Graph {
     		foo.addAll(getAllNodes());
     		for (Node fooNode: foo)
     		{
+    			if (n.hasEdge(fooNode))
+    			{
     		edgeWeights.add(n.getWeight(fooNode));
+    			}
     		}
     	}
     	for (int i : edgeWeights)
@@ -124,14 +127,14 @@ public class Graph {
     	Set <Node> visited = new HashSet<Node>();
     	Queue <Node> toVisit = new LinkedList<Node>();
     	toVisit.add(nameToNode.get(startNodeName));
-    	while (toVisit.isEmpty())
+    	while (!toVisit.isEmpty())
     	{
     		Node current =  toVisit.poll();
     		visited.add(current);
     		v.visit(current);
     		for (Node n : current.neighbors.keySet())
     		{
-    			if (!visited.contains(n))
+    			if (!visited.contains(n)&&!toVisit.contains(n))
     			{
     				toVisit.add(n);
     			}
@@ -158,14 +161,14 @@ public class Graph {
     	Set <Node> visited = new HashSet<Node>();
     	Stack <Node> toVisit = new Stack<Node>();
     	toVisit.add(nameToNode.get(startNodeName));
-    	while (toVisit.isEmpty())
+    	while (!toVisit.isEmpty())
     	{
     		Node current =  toVisit.pop();
     		visited.add(current);
     		v.visit(current);
     		for (Node n : current.neighbors.keySet())
     		{
-    			if (!visited.contains(n))
+    			if (!visited.contains(n)&&!toVisit.contains(n))
     			{
     				toVisit.push(n);
     			}
@@ -327,7 +330,7 @@ public class Graph {
     	Queue<Edge> frontier = new PriorityQueue<Edge>();
     	Node startNode = nameToNode.values().iterator().next();
     	nodesSolved.add(startNode.myName);
-    	while (nodesSolved.size()<nameToNode.size())
+    	do
     	{
     		for (Node n : startNode.getNeighbors())
     		{
@@ -338,6 +341,8 @@ public class Graph {
     		edgesIncluded.add(frontier.poll());
     		
     	}
+    	while (nodesSolved.size()<nameToNode.size());
+    	
     	return result;
     	
     	
@@ -365,12 +370,10 @@ public class Graph {
     	Scanner scan = new Scanner(in);
     	while (scan.hasNextLine())
     	{
-    		String temp = scan.nextLine();
-    		g.getOrCreateNode(temp.substring(0));
-    		Node n = g.getOrCreateNode(temp.substring(0));
-    		temp=temp.substring(2);
-    		g.getOrCreateNode(temp);
-    		g.getOrCreateNode(temp).addUndirectedEdgeToNode(n, 0);
+    		Node n1 = g.getOrCreateNode(scan.next());
+    		Node n2 = g.getOrCreateNode(scan.next());
+    		n1.addUndirectedEdgeToNode(n2, 1);
+    		scan.nextLine();
     	}
     	return g;
     	
@@ -396,7 +399,7 @@ public class Graph {
     public static Graph createUndirectedWeightedGraphFromEdgeList(InputStream in) throws IOException {
     	Graph g = new Graph();
     	Scanner scan = new Scanner(in);
-    	while (scan.hasNextLine())
+    	while (scan.hasNext())
     	{
     		Node n1 = g.getOrCreateNode(scan.next());
     		Node n2 = g.getOrCreateNode(scan.next());

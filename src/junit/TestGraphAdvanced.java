@@ -137,6 +137,7 @@ public class TestGraphAdvanced
         assertEquals("C", nodes.get(i++));
         assertEquals("D", nodes.get(i++));
         assertEquals("E", nodes.get(i++));
+
     }
     
     @Test
