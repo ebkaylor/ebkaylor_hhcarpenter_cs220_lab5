@@ -1,5 +1,6 @@
 package graph.impl;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
@@ -359,7 +361,19 @@ public class Graph {
      * @throws IOException
      */
     public static Graph createUndirectedUnweightedGraphFromEdgeList(InputStream in) throws IOException {
-        throw new UnsupportedOperationException("Implement this method");
+    	Graph g = new Graph();
+    	Scanner scan = new Scanner(in);
+    	while (scan.hasNextLine())
+    	{
+    		String temp = scan.nextLine();
+    		g.getOrCreateNode(temp.substring(0));
+    		Node n = g.getOrCreateNode(temp.substring(0));
+    		temp=temp.substring(2);
+    		g.getOrCreateNode(temp);
+    		g.getOrCreateNode(temp).addUndirectedEdgeToNode(n, 0);
+    	}
+    	return g;
+    	
     }
 
     /**
@@ -380,7 +394,15 @@ public class Graph {
      * @throws IOException
      */
     public static Graph createUndirectedWeightedGraphFromEdgeList(InputStream in) throws IOException {
-        throw new UnsupportedOperationException("Implement this method");
+    	Graph g = new Graph();
+    	Scanner scan = new Scanner(in);
+    	while (scan.hasNextLine())
+    	{
+    		Node n1 = g.getOrCreateNode(scan.next());
+    		Node n2 = g.getOrCreateNode(scan.next());
+    		n1.addUndirectedEdgeToNode(n2, scan.nextInt());
+    	}
+    	return g;
     }
 
     /**
