@@ -168,7 +168,7 @@ public class Graph {
     		v.visit(current);
     		for (Node n : current.neighbors.keySet())
     		{
-    			if (!visited.contains(n)&&!toVisit.contains(n))
+    			if (!visited.contains(n))
     			{
     				toVisit.push(n);
     			}
@@ -191,8 +191,10 @@ public class Graph {
     	}
 		@Override
 		public int compareTo(Node n) {
-
+			if ((Integer.compare(nameToNode.get(destination).getWeight(n), cost)!=0))
 			return Integer.compare(nameToNode.get(destination).getWeight(n), cost);
+			else
+				return nameToNode.get(destination).compareTo(n);
 			
 		}
     	
@@ -212,26 +214,7 @@ public class Graph {
      * @return
      */
     public Map<Node, Integer> dijkstra(String startName) {
-//    	
-//    	
-//    	
-//    	
-//    Queue <Path> path = new PriorityQueue <Path>();
-//    Map <Node, Integer> destinationToCost = new TreeMap <Node, Integer>();
-//    for (Node s :nameToNode.get(startName).getNeighbors()){
-//    Path tempPath = new Path(s.myName,s.getWeight(nameToNode.get(startName)));
-//    path.add(tempPath);
-//    }
-//    
-//    destinationToCost.put(getOrCreateNode(startName),0);
-//    while (destinationToCost.size()<getAllNodes().size())
-//      {
-//    	destinationToCost.put(getOrCreateNode(path.peek().destination), path.poll().cost);
-//    	  
-//    	  
-//      }
-//    	return destinationToCost;
-//    
+
     	Map<Node, Integer> result = new HashMap<Node, Integer>();
     	result.put(nameToNode.get(startName), 0);
     	Queue<Path> toDo= new PriorityQueue<Path>();
@@ -239,15 +222,32 @@ public class Graph {
     	while (result.size()<getAllNodes().size())
     	{
     		Path nextPath = toDo.poll();
-    		Node node = nameToNode.get(nextPath.destination);
-    		if (result.containsKey(node))
+    		System.out.println("Path: " + nextPath.destination);
+    		for (Node n: result.keySet())
     		{
-    			continue;
+    			for (Node foo: n.getNeighbors())
+    			{
+    				if(!result.containsKey(foo))
+    				{
+    					toDo.add(new Path("la", 1)); 
+    				}
+    			
+    			}
     		}
-    		int cost = result.get(node);
-    		for (Node n: result.keySet()) {
-    			Path p = new Path(n.myName, cost);
-    		}
+    		result.put(nameToNode.get(toDo.peek().destination), toDo.poll().cost);
+    		
+    		
+    		
+    		
+//    		Node node = nameToNode.get(nextPath.destination);
+//    		if (result.containsKey(node))
+//    		{
+//    			continue;
+//    		}
+//    		int cost = result.get(node);
+//    		for (Node n: result.keySet()) {
+//    			Path p = new Path(n.myName, cost);
+//    		}
     	}
     	return result;
     	
