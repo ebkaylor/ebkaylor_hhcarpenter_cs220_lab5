@@ -307,6 +307,11 @@ public class Graph {
     	public int compareTo(Edge o){
     		return this.getWeight()-o.weight;
     	}
+    	
+    	@Override
+    	public String toString(){
+    		return label;
+    	}
     }
     /**
      * Perform Prim-Jarnik's algorithm to compute a Minimum Spanning Tree (MST).
@@ -330,19 +335,29 @@ public class Graph {
     	Queue<Edge> frontier = new PriorityQueue<Edge>();
     	Node startNode = nameToNode.values().iterator().next();
     	nodesSolved.add(startNode.myName);
+    	
+    	
     	do
     	{
     		for (Node n : startNode.getNeighbors())
     		{
+    			if (!nodesSolved.contains(n.myName))
     			frontier.add(new Edge(startNode,n));
     		}
     		nodesSolved.add(frontier.peek().getNd().myName);
+    		System.out.println("Top of Queue: "+frontier.peek().getNd().myName);
     		startNode=frontier.peek().getNd();
     		edgesIncluded.add(frontier.poll());
     		
     	}
     	while (nodesSolved.size()<nameToNode.size());
     	
+    	for (Edge e : edgesIncluded)
+    	{
+    		
+    		e.nd.addUndirectedEdgeToNode(e.src, e.weight);
+    	}
+    	System.out.println(result.getSumOfAllEdgeWeights());
     	return result;
     	
     	
