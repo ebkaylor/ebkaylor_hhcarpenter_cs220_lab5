@@ -334,9 +334,23 @@ public class Graph {
     	Set<Edge> edgesIncluded = new HashSet<Edge>();
     	Queue<Edge> frontier = new PriorityQueue<Edge>();
     	Node startNode = nameToNode.values().iterator().next();
+    	result.getOrCreateNode(startNode.myName);
     	nodesSolved.add(startNode.myName);
     	
-    	
+//    	do
+//    	{
+//    		for (Node n : startNode.getNeighbors())
+//    		{
+//    			if (!nodesSolved.contains(n.myName))
+//    			frontier.add(new Edge(startNode,n));
+//    		}
+//    		nodesSolved.add(frontier.peek().getNd().myName);
+//    		System.out.println("Top of Queue: "+frontier.peek().getNd().myName);
+//    		startNode=frontier.peek().getNd();
+//    		edgesIncluded.add(frontier.poll());
+//    		
+//    	}
+//    	while (nodesSolved.size()<nameToNode.size());
     	do
     	{
     		for (Node n : startNode.getNeighbors())
@@ -344,23 +358,26 @@ public class Graph {
     			if (!nodesSolved.contains(n.myName))
     			frontier.add(new Edge(startNode,n));
     		}
+    		
+    		
     		nodesSolved.add(frontier.peek().getNd().myName);
     		System.out.println("Top of Queue: "+frontier.peek().getNd().myName);
     		startNode=frontier.peek().getNd();
-    		edgesIncluded.add(frontier.poll());
+    		Edge ed = frontier.poll();
+    		Node n1 = result.getOrCreateNode(ed.src.getName());
+    		Node n2 = result.getOrCreateNode(ed.nd.getName());
+    		if (!nodesSolved.contains(n2))
+    		{
+    		n1.addUndirectedEdgeToNode(n2, ed.weight);
+    		}
+    		
+    		
+    		
     		
     	}
     	while (nodesSolved.size()<nameToNode.size());
-    	
-    	for (Edge e : edgesIncluded)
-    	{
     		
-    		e.nd.addUndirectedEdgeToNode(e.src, e.weight);
-    	}
-    	System.out.println(result.getSumOfAllEdgeWeights());
     	return result;
-    	
-    	
     }
 
     /**
