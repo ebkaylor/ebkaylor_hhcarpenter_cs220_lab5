@@ -179,22 +179,21 @@ public class Graph {
 
   
     
-    private class Path implements Comparable<Node>{
+    private class Path implements Comparable<Path>{
 
     	String destination;
-    	Integer cost;
+    	Integer popper;
     	
     	public Path(String s, Integer c)
     	{
     		destination=s;
-    		cost=c;
+    		popper=c;
     	}
 		@Override
-		public int compareTo(Node n) {
-			if ((Integer.compare(nameToNode.get(destination).getWeight(n), cost)!=0))
-			return Integer.compare(nameToNode.get(destination).getWeight(n), cost);
-			else
-				return nameToNode.get(destination).compareTo(n);
+		public int compareTo(Path n) {
+			Node foo = nameToNode.get(n.destination);
+			int bar = n.popper;
+			return popper.compareTo(bar);
 			
 		}
     	
@@ -215,42 +214,30 @@ public class Graph {
      */
     public Map<Node, Integer> dijkstra(String startName) {
 
-    	Map<Node, Integer> result = new HashMap<Node, Integer>();
-    	result.put(nameToNode.get(startName), 0);
-    	Queue<Path> toDo= new PriorityQueue<Path>();
-    	toDo.add(new Path (startName, 0));
-    	while (result.size()<getAllNodes().size())
-    	{
-    		Path nextPath = toDo.poll();
-    		System.out.println("Path: " + nextPath.destination);
-    		for (Node n: result.keySet())
-    		{
-    			for (Node foo: n.getNeighbors())
-    			{
-    				if(!result.containsKey(foo))
-    				{
-    					toDo.add(new Path("la", 1)); 
-    				}
-    			
-    			}
+    	Map <Node, Integer> result = new HashMap<Node,Integer>(); 
+    	Queue <Path> todo = new PriorityQueue <Path>();
+    	todo.add(new Path(startName, 0)); 
+    	while (result.size() < nameToNode.size()) {
+    		Path nextPath = todo.poll();
+    		String temp = nextPath.destination;
+    		Node node = nameToNode.get(temp);
+    		if (result.containsKey(node)) {
+    			continue;
     		}
-    		result.put(nameToNode.get(toDo.peek().destination), toDo.poll().cost);
-    		
-    		
-    		
-    		
-//    		Node node = nameToNode.get(nextPath.destination);
-//    		if (result.containsKey(node))
-//    		{
-//    			continue;
-//    		}
-//    		int cost = result.get(node);
-//    		for (Node n: result.keySet()) {
-//    			Path p = new Path(n.myName, cost);
-//    		}
+    		int cost = nextPath.popper; 
+    		result.put(node, cost);
+    		System.out.println("Node n: "+ node);
+    		for (Node n: node.getNeighbors()) {
+    			int cost2 = node.getWeight(n);
+    			System.out.println("reached");
+    			todo.add(new Path(n.myName, cost + cost2));
+    			
+    		}
     	}
-    	return result;
-    	
+    return result;
+    
+    
+    
     }
 
     
@@ -328,56 +315,36 @@ public class Graph {
      * @return
      */
     public Graph primJarnik() {
-        
-    	Graph result = new Graph();
-    	Set<String> nodesSolved = new HashSet<String>();
-    	Set<Edge> edgesIncluded = new HashSet<Edge>();
-    	Queue<Edge> frontier = new PriorityQueue<Edge>();
-    	Node startNode = nameToNode.values().iterator().next();
-    	result.getOrCreateNode(startNode.myName);
-    	nodesSolved.add(startNode.myName);
-    	
-//    	do
-//    	{
-//    		for (Node n : startNode.getNeighbors())
-//    		{
-//    			if (!nodesSolved.contains(n.myName))
-//    			frontier.add(new Edge(startNode,n));
-//    		}
-//    		nodesSolved.add(frontier.peek().getNd().myName);
-//    		System.out.println("Top of Queue: "+frontier.peek().getNd().myName);
-//    		startNode=frontier.peek().getNd();
-//    		edgesIncluded.add(frontier.poll());
-//    		
-//    	}
-//    	while (nodesSolved.size()<nameToNode.size());
-    	do
-    	{
-    		for (Node n : startNode.getNeighbors())
-    		{
-    			if (!nodesSolved.contains(n.myName))
-    			frontier.add(new Edge(startNode,n));
-    		}
-    		
-    		
-    		nodesSolved.add(frontier.peek().getNd().myName);
-    		System.out.println("Top of Queue: "+frontier.peek().getNd().myName);
-    		startNode=frontier.peek().getNd();
-    		Edge ed = frontier.poll();
-    		Node n1 = result.getOrCreateNode(ed.src.getName());
-    		Node n2 = result.getOrCreateNode(ed.nd.getName());
-    		if (!nodesSolved.contains(n2))
-    		{
-    		n1.addUndirectedEdgeToNode(n2, ed.weight);
-    		}
-    		
-    		
-    		
-    		
-    	}
-    	while (nodesSolved.size()<nameToNode.size());
-    		
-    	return result;
+       Graph result = new Graph();
+       Queue <Edge> frontier = new PriorityQueue<Edge>();
+       Node startNode = nameToNode.values().iterator().next();
+       System.out.println(startNode.neighbors.size());
+       while (result.nameToNode.size()<nameToNode.size())
+       {
+    	   Node n1 = result.getOrCreateNode(startNode.myName);
+    	   n1=startNode;
+    	   System.out.println("Node 1:" +n1.myName);
+    	   System.out.println("Num neighbors:"+n1.getNeighbors().size());
+    	   for (Node n : n1.getNeighbors())
+    	   {
+    		   if (!result.containsNode(n.myName)) {
+    			   Node n2 = result.getOrCreateNode(n.myName);
+    			   n2.addUndirectedEdgeToNode(n1, n1.getWeight(n));
+    			   for (Node foo : n.getNeighbors())
+    			   {
+    				   n2.addUndirectedEdgeToNode(n, n.getWeight(foo));
+    			   }
+    				   
+    			   frontier.add(new Edge (n1,n2));
+    			   System.out.println("Node 2:"+n2.myName);
+    		   
+    		   }
+    	   }
+    	   startNode=frontier.poll().nd;
+    	   
+       }
+    	   return result;
+       	
     }
 
     /**
