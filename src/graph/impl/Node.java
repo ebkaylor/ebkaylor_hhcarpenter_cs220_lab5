@@ -27,154 +27,154 @@ import java.util.TreeMap;
  *
  */
 public class Node implements Comparable<Node> {
-	
+
 	String myName;
 	Map <Node, Integer> neighbors;
-    /**
-     * Create a new node with the given name. The newly created node should
-     * have no edges.
-     * @param name
-     */
-    public Node(String name) {
-        this.myName = name;
-        this.neighbors = new TreeMap <Node, Integer>();
-    }
+	/**
+	 * Create a new node with the given name. The newly created node should
+	 * have no edges.
+	 * @param name
+	 */
+	public Node(String name) {
+		this.myName = name;
+		this.neighbors = new TreeMap <Node, Integer>();
+	}
 
-    /**
-     * Return the name of the node, which is a String.
-     * 
-     * @return
-     */
-    public String getName() {
-       return myName;
-    }
+	/**
+	 * Return the name of the node, which is a String.
+	 * 
+	 * @return
+	 */
+	public String getName() {
+		return myName;
+	}
 
-    /**
-     * Return a collection of nodes that the current node is connected to by an edge.
-     * 
-     * @return
-     */
-    public Collection<Node> getNeighbors() {
-    	Set<Node> collection = new HashSet<Node>();
-        for (Node s : neighbors.keySet())
-        {
-        	collection.add(s);
-        }
-    	return collection;
-    }
+	/**
+	 * Return a collection of nodes that the current node is connected to by an edge.
+	 * 
+	 * @return
+	 */
+	public Collection<Node> getNeighbors() {
+		Set<Node> collection = new HashSet<Node>();
+		for (Node s : neighbors.keySet())
+		{
+			collection.add(s);
+		}
+		return collection;
+	}
 
-    /**
-     * Add a directed edge to the given node using the given weight.
-     * 
-     * @param n
-     * @param weight
-     */
-    public void addDirectedEdgeToNode(Node n, int weight) {
-        neighbors.put(n, weight);
-    	
-     }
+	/**
+	 * Add a directed edge to the given node using the given weight.
+	 * 
+	 * @param n
+	 * @param weight
+	 */
+	public void addDirectedEdgeToNode(Node n, int weight) {
+		neighbors.put(n, weight);
 
-    /**
-     * Add an undirected edge to the given node using the given weight.
-     * Remember than an undirected edge can be implemented using two directed edges.
-     * 
-     * @param n
-     * @param weight
-     */
-    public void addUndirectedEdgeToNode(Node n, int weight) {
-        neighbors.put(n, weight);
-        n.neighbors.put(this, weight);
-    }
+	}
 
-    /**
-     * Remove the directed edge to the given node.
-     * 
-     * If there is no edge to the given node, throw
-     * IllegalStateException (which is a type of runtime exception).
-     * 
-     * @param n
-     * @throws IllegalStateException
-     */
-    public void removeDirectedEdgeToNode(Node n) {
-        if (neighbors.containsKey(n)) {
-        	neighbors.remove(n);
-        }
-        else {
-        	throw new IllegalStateException();
-        }
-    }
+	/**
+	 * Add an undirected edge to the given node using the given weight.
+	 * Remember than an undirected edge can be implemented using two directed edges.
+	 * 
+	 * @param n
+	 * @param weight
+	 */
+	public void addUndirectedEdgeToNode(Node n, int weight) {
+		neighbors.put(n, weight);
+		n.neighbors.put(this, weight);
+	}
 
-    /**
-     * Remove an undirected edge to the given node. This means removing
-     * the edge to the given node, but also any edge from the given
-     * node back to this node.
-     * 
-     * Throw a IllegalStateException if there is no edge to the given node.
-     * 
-     * @param n
-     * @throws IllegalStateException
-     */
-    public void removeUndirectedEdgeToNode(Node n) {
-    	if (neighbors.containsKey(n) && n.neighbors.containsKey(this)) {
-    		neighbors.remove(n);
-    		n.neighbors.remove(this);
-    	}
-    	else {
-    		throw new IllegalStateException();
-    	}
-    	
-    }
+	/**
+	 * Remove the directed edge to the given node.
+	 * 
+	 * If there is no edge to the given node, throw
+	 * IllegalStateException (which is a type of runtime exception).
+	 * 
+	 * @param n
+	 * @throws IllegalStateException
+	 */
+	public void removeDirectedEdgeToNode(Node n) {
+		if (neighbors.containsKey(n)) {
+			neighbors.remove(n);
+		}
+		else {
+			throw new IllegalStateException();
+		}
+	}
 
-    /**
-     * Return true if there is an edge to the given node from this node,
-     * and false otherwise.
-     * 
-     * @param other
-     * @return
-     */
-    public boolean hasEdge(Node other) {
-        if (neighbors.containsKey(other))
-        {
-        	return true;
-        }
-        else {
-        	return false;
-        }
-    	
-    }
+	/**
+	 * Remove an undirected edge to the given node. This means removing
+	 * the edge to the given node, but also any edge from the given
+	 * node back to this node.
+	 * 
+	 * Throw a IllegalStateException if there is no edge to the given node.
+	 * 
+	 * @param n
+	 * @throws IllegalStateException
+	 */
+	public void removeUndirectedEdgeToNode(Node n) {
+		if (neighbors.containsKey(n) && n.neighbors.containsKey(this)) {
+			neighbors.remove(n);
+			n.neighbors.remove(this);
+		}
+		else {
+			throw new IllegalStateException();
+		}
 
-    /**
-     * Get the weight of the edge to the given node.
-     * 
-     * If no such edge exists, throw {@link IllegalStateException}
-     * 
-     * @param n
-     * @return
-     * @throws IllegalStateException
-     */
-    public int getWeight(Node n) {
-    	if (hasEdge(n))
-    	{
-    		return neighbors.get(n);
-    	}
-    	else
-    	{
-    		throw new IllegalStateException();
-    	}
-    }
+	}
 
-    @Override
-    public int compareTo(Node o) {
-        // Nodes should be sorted alphabetically by their name
-        // just delegate to the compareTo() method for String
-    	return myName.compareTo(o.getName());
-    	
-    	
-    	
-    }
+	/**
+	 * Return true if there is an edge to the given node from this node,
+	 * and false otherwise.
+	 * 
+	 * @param other
+	 * @return
+	 */
+	public boolean hasEdge(Node other) {
+		if (neighbors.containsKey(other))
+		{
+			return true;
+		}
+		else {
+			return false;
+		}
 
-    @Override
-    public String toString() {
-        return myName;
-    }
+	}
+
+	/**
+	 * Get the weight of the edge to the given node.
+	 * 
+	 * If no such edge exists, throw {@link IllegalStateException}
+	 * 
+	 * @param n
+	 * @return
+	 * @throws IllegalStateException
+	 */
+	public int getWeight(Node n) {
+		if (hasEdge(n))
+		{
+			return neighbors.get(n);
+		}
+		else
+		{
+			throw new IllegalStateException();
+		}
+	}
+
+	@Override
+	public int compareTo(Node o) {
+		// Nodes should be sorted alphabetically by their name
+		// just delegate to the compareTo() method for String
+		return myName.compareTo(o.getName());
+
+
+
+	}
+
+	@Override
+	public String toString() {
+		return myName;
+	}
 }
